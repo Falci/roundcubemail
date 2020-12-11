@@ -134,22 +134,16 @@ class rcube_utils
         else {
             // If not an IP address
             $domain_array = explode('.', $domain_part);
-            // Not enough parts to be a valid domain
-            if (count($domain_array) < 2) {
-                return false;
-            }
 
             foreach ($domain_array as $part) {
-                if (!preg_match('/^((xn--)?([A-Za-z0-9][A-Za-z0-9-]{0,61}[A-Za-z0-9])|([A-Za-z0-9]))$/', $part)) {
+                if (!preg_match('/^[A-Za-z0-9-_]{1,63}$/', $part)) {
                     return false;
                 }
             }
 
             // last domain part (allow extended TLD)
             $last_part = array_pop($domain_array);
-            if (strpos($last_part, 'xn--') !== 0
-                && (preg_match('/[^a-zA-Z0-9]/', $last_part) || preg_match('/^[0-9]+$/', $last_part))
-            ) {
+            if (!preg_match('/^(?![-_])[A-Za-z0-9-_]{1,63}(?<![-_])$/', $last_part)) {
                 return false;
             }
 

@@ -442,6 +442,7 @@ function rcube_check_email(input, inline, count, strict)
       //sub_domain = '('+atom+'|'+domain_literal+')',
       // allow punycode/unicode top-level domain, allow extended domains (#5588)
       domain = '(('+ip_addr+')|(([^@\\x2e]+\\x2e)+([^\\x00-\\x2f\\x3a-\\x40\\x5b-\\x60\\x7b-\\x7f]{2,}|xn--[a-z0-9]{2,})))',
+      hns = '(?![-_])[a-z0-9-_]{1,63}(?<![-_])',
       // ICANN e-mail test (http://idn.icann.org/E-mail_test)
       icann_domains = [
         '\\u0645\\u062b\\u0627\\u0644\\x2e\\u0625\\u062e\\u062a\\u0628\\u0627\\u0631',
@@ -460,7 +461,7 @@ function rcube_check_email(input, inline, count, strict)
       word = strict ? '('+atom+'|'+quoted_string+')' : '[^\\u0000-\\u0020\\u002e\\u00a0\\u0040\\u007f\\u2028\\u2029]+',
       delim = '[,;\\s\\n]',
       local_part = word+'(\\x2e'+word+')*',
-      addr_spec = '(('+local_part+'\\x40'+domain+')|('+icann_addr+'))',
+      addr_spec = '(('+local_part+'\\x40('+domain+'|'+hns+'))|('+icann_addr+'))',
       rx_flag = count ? 'ig' : 'i',
       rx = inline ? new RegExp('(^|<|'+delim+')'+addr_spec+'($|>|'+delim+')', rx_flag) : new RegExp('^'+addr_spec+'$', 'i');
 
